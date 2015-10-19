@@ -1,0 +1,116 @@
+﻿<Window x:Class="DirectoryManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Directory Manager" Height="400" Width="600"
+        WindowStartupLocation="CenterScreen"
+        xmlns:myCustomData="clr-namespace:DirectoryManager.Models"
+        xmlns:myCustomLocal="clr-namespace:DirectoryManager.ViewModels">
+    
+    <Window.DataContext>
+        <myCustomLocal:DirViewModel />
+    </Window.DataContext>
+
+    <Border CornerRadius="5" BorderBrush="DarkRed" BorderThickness="1" Margin="5" Padding="5">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <!-- Current Directories  Column -->
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Height="50">
+                    <DockPanel Margin="5, 10, 5, 5">
+                        <TextBlock HorizontalAlignment="Left" Text="Current Directories" FontWeight="Bold" />
+
+                        <Button Content="Test Click Me" HorizontalAlignment="Right" Padding="2"
+                            Command="{Binding TestCmd}" 
+                            CommandParameter="This is test command parameter!"/>
+                    </DockPanel>
+                </StackPanel>
+
+                <!-- List of Current Directories-->
+                <Grid Grid.Row="1">
+                    <TreeView BorderThickness="0"
+                                FontWeight="Bold" ItemsSource="{Binding Dirs}">
+                        <TreeView.ItemTemplate>
+
+                            <HierarchicalDataTemplate DataType="{x:Type myCustomData:DirModel}"
+                                        ItemsSource="{Binding SubDirs}">
+
+                                <WrapPanel Margin="5" VerticalAlignment="Center">
+                                    <CheckBox x:Name="chkDir" IsChecked="{Binding IsSelected}"
+                                        Content="{Binding DirDescription}" VerticalAlignment="Center" />
+
+                                    <Button x:Name="btnMoveDir" Grid.Row="3" Content="Move"
+                                        Margin="10, 0, 0, 0" Padding="2"
+                                        Tag="{Binding}"
+                                        Command="{Binding DataContext.MoveDirCmd, 
+                                            RelativeSource={RelativeSource FindAncestor, 
+                                            AncestorType=TreeView}}"
+                                        CommandParameter="{Binding ElementName=btnMoveDir}"/>
+                                </WrapPanel>
+                                
+                            </HierarchicalDataTemplate>
+
+                        </TreeView.ItemTemplate>
+
+                    </TreeView>
+                </Grid>
+                <!-- /End List of Current Directories-->
+
+            </Grid>
+            <!-- / End Current Directories  Column -->
+            
+            <GridSplitter Grid.Column="1" Width="2" Background="DarkRed"
+                ResizeBehavior="PreviousAndNext" ShowsPreview="true"
+                Margin="5, 0, 5, 0" />
+
+            <!-- Process Directories  Column -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <StackPanel Grid.Row="0" Height="50">
+                    <DockPanel Margin="5, 10, 5, 5">
+                        <TextBlock HorizontalAlignment="Left" Text="Process Directories" FontWeight="Bold" />
+
+                        <Button Content="Clear All" HorizontalAlignment="Right" Padding="2"
+                            Command="{Binding ClearCmd}" />
+                    </DockPanel>
+                </StackPanel>
+
+                <!-- List of Process Directories-->
+                <Grid Grid.Row="1">
+                    <TreeView BorderThickness="0" ItemsSource="{Binding ProcessDirs}">
+                        <TreeView.ItemTemplate>
+
+                            <HierarchicalDataTemplate DataType="{x:Type myCustomData:DirModel}"
+                                        ItemsSource="{Binding SubDirs}">
+
+                                <WrapPanel Margin="5">
+
+                                    <TextBlock Text="{Binding DirDescription}" />
+
+                                </WrapPanel>
+                            </HierarchicalDataTemplate>
+
+                        </TreeView.ItemTemplate>
+
+                    </TreeView>
+                </Grid>
+                <!-- /End List of Process Directories-->
+
+            </Grid>
+            <!-- / End Process Directories  Column -->
+        </Grid>
+    </Border>
+</Window>
